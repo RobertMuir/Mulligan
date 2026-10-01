@@ -24,7 +24,7 @@ A real alternative changes the overall shape, not a detail inside the same shape
 - the module map;
 - bodies left as `throw new Error('not implemented')` with comments for the tricky logic.
 
-To get genuinely different candidates, fan out (**attacking-the-pin**, or the `mulligan_fanout` tool) with the design task and [references/design-brief.md](references/design-brief.md) — different models and angles produce different shapes.
+To get genuinely different candidates, fan out (**attacking-the-pin**) with the design task and [references/design-brief.md](references/design-brief.md) — different models and angles produce different shapes.
 
 ## 4. Check each design
 

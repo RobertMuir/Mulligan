@@ -11,6 +11,11 @@
 
 This repository implements your new coding tool empowering engineers to develop at pace but safely!
 
+## About the author
+
+Mulligan is built by **Robert Muir**, a Senior Full Stack Engineer (React, React Native, TypeScript, C#/.NET, Azure, Python and applied AI). I'm looking for my next role — if your team cares about shipping AI-assisted code that people can trust, I'd like to hear from you: [github.com/RobertMuir](https://github.com/RobertMuir).
+
+## Release Log
 Version 0.1:
 - Mulligan Memory
 - the Coding Standards Cookbook 
@@ -20,22 +25,29 @@ Version 0.1:
 Finally Mulligan Bot, your agentic friendly coding terminal with model routing and a permission layer.
 
 Also in 0.1:
-- **A plugin** for Claude Code and Cursor: 23 skills, 2 agents and an MCP server.
+- **A plugin** for Claude Code and Cursor: 23 workflow skills, 25 Mulligan principles, 2 agents and an MCP server.
 - **The Karpathy principles** in every review: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution.
 - **Every model:** Claude, GPT, Gemini, OpenRouter, Mistral, Groq, Together, DeepSeek, xAI, Fireworks, and local Llama models through Ollama, llama.cpp, LM Studio or vLLM.
 - **Automatic model selection**, weighted by how difficult each task is.
-- **Fan-out:** N models attack a problem from different angles, each candidate is verified in isolation, and blind judges rank them against a private rubric.
+- **Fan-out:** when a change has more than one good shape, several subagents attack it from different angles, each candidate is verified in its own git worktree, and blind judges rank them against a private rubric. It runs on the coding agent's own subagents, so it needs no API key.
+- **A baseline cookbook** written on setup: TypeScript, testing, architecture, scope guardrails and security rules drawn from the OWASP API Security Top 10, all editable by your team.
+- **Sharp briefs from loose prompts:** a pasted ticket or a vague request is rewritten into a brief with a goal, scope and runnable success checks, and you approve it before any code is written.
+- **Mulligan principles:** 25 short, enforceable guidelines the main mode applies and cites, written for a human-in-the-loop flow.
 
 ## Install as a plugin
 
-**Claude Code**
+This repository is its own plugin marketplace: **[github.com/RobertMuir/Mulligan](https://github.com/RobertMuir/Mulligan)** (manifest: [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)).
+
+**Claude Code** — add the marketplace, then install the plugin:
 
 ```text
-/plugin marketplace add <path-or-git-url-of-this-repo>
+/plugin marketplace add RobertMuir/Mulligan
 /plugin install Mulligan@Mulligan
 ```
 
-**Cursor** — add this repository as a plugin; the manifest is `.cursor-plugin/plugin.json`.
+Then start a task with `/Mulligan:mulligan-mode <what you want done>`. To update later: `/plugin marketplace update Mulligan`.
+
+**Cursor** — add [github.com/RobertMuir/Mulligan](https://github.com/RobertMuir/Mulligan) as a plugin; the manifest is `.cursor-plugin/plugin.json`.
 
 The plugin ships the skills in `skills/`, the agents in `agents/`, and the `Mulligan` MCP server (`dist/mcp-server.mjs`, self-contained; only Node 20+ is needed). Start with the **setup-mulligan** skill, then use **mulligan-mode** for real work.
 
@@ -76,16 +88,67 @@ Keys always come from environment variables; nothing is written to files.
 
 **Automatic selection.** `/models routing auto` scores every task for difficulty from named factors: architecture, concurrency, security, data integrity, performance, number of files, Safety mode, the role, and each Mulligan already taken. It then picks the cheapest ready model whose capability meets that difficulty. Repeated Mulligan escalate to stronger models. `/route <task>` shows every factor and the choice. Weights live in `models.routing.weights`, capabilities can be corrected with `/models capability`, and `--prefer-local` uses local models whenever they are capable enough.
 
-## The Mulligan loop and fan-out
+## The Mulligan loop
 
-`/implement` and `/take-a-mulligan` fan out automatically when a task is hard enough (`loop.fanout` in config, default difficulty 60, 3 candidates):
+Every task in **mulligan-mode** runs the same loop: understand, consult memory and the cookbook, define done as checks, plan, build, verify, review, explain, and then you decide. Mulligan states up front how the code will be written:
 
-1. Each model gets the same task from a different angle: smallest change, failure first, codebase-native, test first, rebuild around the requirement, data shape first.
-2. Each candidate is applied in its own temporary git worktree that carries your uncommitted work. Your working tree is never touched.
+- **self** — the default for ordinary work: the agent writes the smallest sufficient change itself.
+- **single** — a hard or large change: one subagent writes it in an isolated worktree, and the orchestrating agent reads the whole diff before applying it.
+- **race** — a change with several valid shapes (no precedent in the codebase, a contested design, or an approach you rejected): several candidates compete.
+- **split** — independent work such as an audit: parallel workers, one report.
+
+Mulligan keeps an eye on cost: it reads in batches, runs the full verification once at the end, and keeps the hand-back short enough to act on.
+
+## From a loose prompt to a sharp brief
+
+Engineers are busy, and prompts get sloppy: a feature pasted straight from an Azure DevOps or Jira ticket, a bug described in one line, "make the export work properly". Models do their worst work on exactly those requests, because nobody said what done looks like.
+
+When a request is a long paste or has no clear goal, scope or way to know it is finished, **mulligan-mode** stops before building and runs **prompt-engineer**:
+
+1. It picks the template for the kind of work (feature, bug, refactor, architecture, test, security).
+2. It fills it from evidence — the real files involved, your cookbook rules and Mulligan Memory — keeping your own words for the goal.
+3. It turns vague acceptance into runnable checks, adds what is out of scope, and puts open questions at the top with a proposed answer for each.
+4. Everything it inferred is marked, so you can see exactly what you did not say.
+5. **You review the brief.** Agree, edit or reject it; only then does Mulligan build.
+
+```text
+You:      "Bug 4821: export broken for some users, customers complaining, pls fix asap"
+
+Mulligan: Brief (please confirm or edit)
+  Goal:        CSV export fails for some users (your words: "export broken for some users").
+  Open (proposed answers):  Which users? → [inferred] accounts with more than 10k rows, per the error log.
+  Done when:   export of a 25k-row account completes (integration test); existing export tests pass.
+  Out of scope: export format, scheduling.
+  Constraints: TEST-002 (failing test first), AI-001 (stay inside src/export/).
+```
+
+A short, clear request skips this step: restating it is enough. The point is that every model, from a local Llama to the strongest hosted one, gets a brief it can actually succeed with.
+
+## Mulligan principles
+
+The main mode works from a set of principles, each a short leaf skill (`skills/principle-*`) with the rule, why it matters, what it looks like in practice, where the developer comes in, when it does not apply, and one check. **mulligan-mode** lists them with the situation each one covers; the agent reads the principles it applies in full and names, in its hand-back, every principle that shaped a decision and what it changed.
+
+| Group | Principles |
+|---|---|
+| The Karpathy four | Think Before Coding · Simplicity First · Surgical Changes · Goal-Driven Execution |
+| Human in the loop | The Developer Decides · Brief Before Build · Hand Back With Evidence · Learn With Consent |
+| Shape | Data First · Edges Guarded, Middle Trusted · Let the Compiler Carry It · Safe to Run Twice · Unshare Before You Lock |
+| Change | Smallest Sufficient Change · Rebuild Around the Requirement · One API at a Time · Readable in Thirty Seconds · Try Two Real Shapes |
+| Proof | Evidence, Not Assertion · Fix Where It Starts · One Verified Step at a Time · Tests That Can Fail · Doubt the Shared Assumption · Build the Tool |
+| Economy | Spend on the Change |
+
+The human-in-the-loop group is what sets Mulligan apart: facts are settled by the agent, decisions come to you early with a recommendation, every hand-back is labelled with its evidence, and nothing is learned without your consent.
+
+## Fan-out (a race)
+
+1. Each candidate gets the same task from a different angle: smallest change, failure first, codebase-native, test first, rebuild around the requirement, data shape first.
+2. Each candidate works in its own git worktree. Your working tree is never touched while they run.
 3. Your verification commands run in each worktree.
-4. Blind judges, never the model that wrote the candidate, score it against the private rubric in `.mulligan/verification/rubric.yaml`: Correctness, the four Karpathy principles, and project standards. Implementing models never see the rubric.
+4. Blind judges, on a different model from the orchestrator and never the model that wrote the candidate, score it against the private rubric in `.mulligan/verification/rubric.yaml`: Correctness, the four Karpathy principles, and project standards. The orchestrator scores every candidate too and explains any disagreement. Implementing models never see the rubric.
 5. Hard evidence adjusts the scores: verification, size against the smallest candidate, unneeded files, tests, stated criteria and assumptions, and cookbook violations.
-6. You get a ranking with every reason shown. `/pick` and `/apply` use the git-generated diff. You decide.
+6. The leader is applied uncommitted; every candidate's diff is saved so you can swap. Good ideas from the losers are grafted in by hand and verified. You decide.
+
+Candidates run on the coding agent's own subagents (Claude Code's `Agent` tool, on your existing login). Without subagents, the candidates are built one after another. Models configured in the MCP server — any provider, or local models through Ollama, llama.cpp, LM Studio or vLLM — can join the race, but nothing depends on them.
 
 ## What lives where
 
@@ -109,22 +172,29 @@ project/
 
 Mulligan takes teachings from some of the greatest minds in AI, such as Andrej Karpathy's principles for working with coding models. It adapts them for software where humans must stay accountable: code that people have to understand, sign off and maintain. The human is not a reviewer bolted on at the end of an agent's run. They stay inside the agentic loop, and every decision they make teaches the system. The result is a **hybrid human–agentic flow**: agents do the exploring, building and proving, and the human remains the senior engineer and the final decision-maker.
 
-| | Typical coding agent | Rigour-first skill packs (e.g. pstack) | Mulligan |
+| | Typical coding agent | Autonomy-first agent workflows | Mulligan |
 |---|---|---|---|
 | Who decides | The agent, then you review | The agent proceeds on reversible work; you course-correct afterwards | The agent settles facts by experiment; **you** decide approaches, memory and commits |
-| Learns your standards | No, or per session | Captures lessons as skill edits (`/reflect`) | `.MulliganMem` with provenance and your confirmation, a cookbook with machine checks, golden PRs |
+| Learns your standards | No, or per session | Lessons written back into prompts or skills | `.MulliganMem` with provenance and your confirmation, a cookbook with machine checks, golden PRs |
+| Standards from day one | None | Built into the workflow's own prompts | A baseline cookbook in your repo (TypeScript, testing, scope, OWASP-based security) that your team edits and Mulligan Review enforces |
 | Review | Model opinion | Several models review adversarially | A deterministic evidence engine (Karpathy checks, AST cookbook rules, security, blast radius, verification), then model review on top, labelled as opinion |
-| Several attempts | Retry | Parallel candidates with a cross-judge | Candidates verified in isolated worktrees, judged blind against a private weighted rubric, ranked with evidence, triggered automatically by difficulty |
-| Models | One vendor | Cursor's models, configured per role | Any provider or local model; automatic selection by task difficulty |
-| Where it runs | Its own app | Cursor | Claude Code, Cursor (plugin and MCP), and a standalone terminal |
+| Several attempts | Retry | Parallel candidates with a cross-judge | Candidates verified in isolated worktrees, judged blind against a private weighted rubric, ranked with evidence — and only when the change genuinely has more than one good shape |
+| Models | One vendor | Configured per role | Any provider or local model; fan-out runs on the agent's own subagents with no API key |
+| Where it runs | Its own app | One host | Claude Code, Cursor (plugin and MCP), and a standalone terminal |
 | Work that needs extra accountability | — | — | Safety review mode: traceability, change control, failure modes |
 
-Where pstack goes further today:
-- 23 playbooks against Mulligan's 6.
-- A `why` investigator that fans out across seven kinds of MCP evidence source.
-- Deep Cursor-native orchestration (cloud agents, PR babysitting, shipping).
+## Why Mulligan for quality-first development
 
-Mulligan's bet is different. It wants the most trusted result, with the human's judgement captured and compounding, in places where code quality is not optional.
+Mulligan is built for code that people have to understand, sign off and maintain. What that means in practice:
+
+- **You stay the senior engineer.** Mulligan settles facts by running things, and brings you only the decisions that are yours: approaches, trade-offs, memory and commits. Every hand-back ends with what was not verified and what is waiting on you.
+- **Your standards compound.** Every accept and every Mulligan can become a lesson in `.MulliganMem`, but only when you confirm it. Lessons carry their provenance and are treated as preference, not law.
+- **Standards are enforced, not suggested.** Cookbook rules with a `check:` run against the syntax tree on every review; rules without one are listed for judgement, never silently passed.
+- **Evidence over assertion.** Every claim in a hand-back is labelled measured, read or inferred, and every result is PROVEN, FAILED or UNPROVEN. A test only counts if it would fail against the old code.
+- **Scope is part of quality.** Changes stay inside the task. Any file outside it is named with its reason, and unrelated problems are reported rather than quietly fixed.
+- **Security has a playbook.** Hardening work follows the OWASP API Security Top 10: access to every record, field-level exposure and mass assignment, roles, input validation, safe errors, resource limits — each finding proven before it is fixed.
+- **Several attempts only when they pay.** A race is reserved for changes with more than one good shape, so ordinary work does not pay for three agents.
+- **Cost is a design constraint.** The loop reads in batches, verifies once at the end, and keeps replies short, because tokens are a team's money.
 
 ## Skills
 
@@ -144,7 +214,7 @@ Playbook: Feature → architect (2 shapes) → implement → verify → mulligan
 Decisions waiting on you: offline edits? cache size limit?
 ```
 
-**What it adds.** Every task passes through your Mulligan Memory, your cookbook and your golden PRs before any code is written. It always ends with a decision handed to you. pstack's mode lets the agent proceed on reversible work and asks you to course-correct afterwards. This one keeps you in charge of approaches without slowing you down. Facts are settled by experiment; only real decisions come to you.
+**What it adds.** Every task passes through your Mulligan Memory, your cookbook and your golden PRs before any code is written, and always ends with a decision handed to you. You stay in charge of approaches without being slowed down: facts are settled by experiment, and only real decisions come to you. Seven playbooks cover investigation, bug fixes, features, security hardening, refactors, performance and prototypes.
 
 ### architect
 
@@ -217,7 +287,7 @@ Unknown: why 45 rather than 60. Ask @author.
 Preserve: ≥45s. Avoid: lowering it (incident INC-88).
 ```
 
-**What it adds.** Every claim carries an evidence grade, so a guess never reads like a finding. If you are about to change the code, it ends with Preserve / Free to change / Avoid / Risk constraints that feed straight into **architect**. pstack's `why` grades confidence too, and searches a wider set of sources. Mulligan's version is narrower but feeds its constraints into the design step.
+**What it adds.** Every claim carries an evidence grade, so a guess never reads like a finding. If you are about to change the code, it ends with Preserve / Free to change / Avoid / Risk constraints that feed straight into **architect**.
 
 ### swing-analysis — teaching
 
@@ -229,7 +299,7 @@ Preserve: ≥45s. Avoid: lowering it (incident INC-88).
 (A two-sentence answer first, then diagrams that add one part at a time, at your pace.)
 ```
 
-**What it adds.** Gaps you uncover can become steps in your personal upskilling plan (**mulliganmem-review**). Preferences you arrive at can become Mulligan Memory candidates.
+**What it adds.** Gaps you uncover can become steps in your personal upskilling plan (**mulligan-memory-review**). Preferences you arrive at can become Mulligan Memory candidates.
 
 ### interrogate
 
@@ -248,7 +318,7 @@ Rejected: "add null check at parse.ts:12". The type already excludes null.
 
 ### attacking-the-pin — fan-out
 
-**Use it when** a task is hard or contested and one attempt would lock in the first idea.
+**Use it when** a change has more than one good shape and one attempt would lock in the first idea.
 
 ```text
 /attacking-the-pin --n 3 add idempotent retries to the payment webhook
@@ -260,7 +330,7 @@ Rejected: "add null check at parse.ts:12". The type already excludes null.
 Recommended: B. /pick B, then /apply.
 ```
 
-**What it adds.** Each candidate is applied in an isolated git worktree and your real checks run there. Judges never see which model wrote a candidate and never judge their own. The rubric is private: implementers never see it. Every score adjustment is shown. Fan-out also starts on its own when a task's difficulty crosses your threshold.
+**What it adds.** Each candidate is applied in an isolated git worktree and your real checks run there. Judges never see which model wrote a candidate and never judge their own. The rubric is private: implementers never see it. Every score adjustment is shown. **mulligan-mode** starts a race on its own when a change has no precedent, a contested design, or follows an approach you rejected.
 
 ### take-a-mulligan
 
@@ -273,7 +343,7 @@ Lesson proposed (candidate): "Prefer direct code over layers until a second use 
 Difficulty +10 → routed to a stronger model. Fanning out with the rejected approach off limits…
 ```
 
-**What it adds.** pstack has no direct equivalent; its closest is the attack-the-premise principle. Here, the rejection reason becomes a candidate memory lesson, the model escalates, and the retry is guaranteed to differ. The skill must always be able to answer one question: *what did we learn from the last attempt?*
+**What it adds.** The rejection reason becomes a candidate memory lesson, the model escalates, the retry races several genuinely different approaches, and none of them may be a variation of what you rejected. The skill must always be able to answer one question: *what did we learn from the last attempt?*
 
 ### tdd
 
@@ -317,12 +387,12 @@ Unverified: production runtime behaviour.  Never a score.
 
 **What it adds.** The evidence engine is deterministic, so the same diff gets the same findings. All four Karpathy principles appear on every review. Your cookbook rules are enforced from the code's syntax tree, and anything unchecked is listed as unverified, not passed.
 
-### mulliganmem-review
+### mulligan-memory-review
 
 **Use it when** you want to see what you are good at, where your gaps are, and a plan to close them.
 
 ```text
-/mulliganmem-review
+/mulligan-memory-review
 ✓ Explicit error handling: 41 catch sites, none empty
 1. Runtime validation: fetch() results trusted at runtime (src/api/user.ts:12). Not yet in your memory.
 UPSKILLING PLAN: learn → review patterns → refactor src/api/user.ts → write tests → /mulligan-review → add the principle
@@ -385,13 +455,31 @@ Symptom · Reproduction · Known so far · Do (reproduce, failing check, fix at 
 
 **What it adds.** Each practice links to an enforceable cookbook check (`no-explicit-any`, `no-non-null-assertion`, …) with documented exceptions (`// mulligan-allow TS-001: <reason>`). Mulligan's own source code follows these rules: no `any`, no non-null assertions, no unchecked casts of untrusted data.
 
+## Make it yours
+
+Mulligan is a set of plain files, and every part of the workflow is meant to be changed to suit your team:
+
+| To change | Where |
+|---|---|
+| How many agents attack a problem, and whether races start automatically | `loop.fanout` in `.mulligan/config.yaml` (`auto`, `count`, `judges`, `verify`) |
+| When Mulligan delegates, races or writes code itself | step 5 of `skills/mulligan-mode/SKILL.md` |
+| The playbooks for each kind of work (add your own: a release, a data migration, an incident) | `skills/mulligan-mode/playbooks/` |
+| The principles the main mode applies | `skills/principle-*/SKILL.md` — edit, remove, or add your own and list it in **mulligan-mode** |
+| How loose prompts become briefs | `skills/prompt-engineer/` and its templates |
+| Your coding standards and their machine checks | `.mulligan/cookbook/*.yaml`, or the **setup-mulligan-cookbook** interview |
+| How race candidates are scored | `.mulligan/verification/rubric.yaml` (private, local) |
+| Which models do which job, and how difficulty is weighted | `models` in `.mulligan/config.yaml`, `/models`, `models.routing.weights` |
+| What proves the app works | `verification.commands`, or **create-verification-skill** |
+
+If something does not suit the way you work, fork it and adapt it. That is what the MIT license is for.
+
 ## Packages
 
 | Package | Contents |
 |---|---|
 | `@mulligan/core` | Standards hierarchy, 15 provider kinds, capability catalog, difficulty weighting, manual and automatic routing, local discovery, code context, workspace, git |
 | `@mulligan/memory` | `.MulliganMem`, provenance, human-confirmation loop, extraction, conflicts, applicability, export and import, MulliganMem Review |
-| `@mulligan/cookbook` | Cookbook parser, TypeScript-AST rule engine, interview, starter rules |
+| `@mulligan/cookbook` | Cookbook parser, TypeScript-AST rule engine, interview, baseline rules |
 | `@mulligan/pr` | PR providers (GitHub, GitLab), golden PR analysis, review-comment learning |
 | `@mulligan/review` | Mulligan Review with the Karpathy principles, cookbook, memory, golden PRs, security, blast radius, verification, Safety mode |
 | `@mulligan/orchestrator` | Fan-out: angles, sandboxed worktrees, blind judges, private rubric, evidence scoring, ranking |
@@ -413,3 +501,7 @@ pnpm typecheck
 - The desktop app and installer.
 - An agent loop that edits files through tools. Implementations are proposed as full files, verified in sandboxes, and applied on `/apply`.
 - Bitbucket and Azure DevOps PR providers. The interface is ready.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Copyright (c) 2026 Robert Muir.

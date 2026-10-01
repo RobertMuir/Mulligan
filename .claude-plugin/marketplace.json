@@ -9,7 +9,7 @@
     {
       "name": "Mulligan",
       "source": "./",
-      "description": "Human-in-the-loop AI engineering: memory, cookbook, Karpathy-principled review, multi-model fan-out with a private rubric.",
+      "description": "Human-in-the-loop AI engineering: memory, cookbook, multi-model fan-out with a private rubric.",
       "version": "0.1.0",
       "category": "development"
     }
