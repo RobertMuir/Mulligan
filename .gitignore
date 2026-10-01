@@ -1,0 +1,12 @@
+node_modules/
+packages/*/dist/
+coverage/
+*.log
+.DS_Store
+
+# Mulligan — local-only engineering memory and private verification
+.MulliganMem
+.mulligan/verification/
+.mulligan/memory/
+.mulligan/sessions/
+.mulligan/audit/

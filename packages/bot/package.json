@@ -1,0 +1,25 @@
+{
+  "name": "@mulligan/bot",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "Mulligan": "./bin/Mulligan.mjs"
+  },
+  "dependencies": {
+    "@mulligan/core": "workspace:*",
+    "@mulligan/memory": "workspace:*",
+    "@mulligan/cookbook": "workspace:*",
+    "@mulligan/pr": "workspace:*",
+    "@mulligan/review": "workspace:*",
+    "@mulligan/mascot": "workspace:*",
+    "tsx": "^4.19.2",
+    "yaml": "^2.6.1",
+    "@mulligan/orchestrator": "workspace:*"
+  }
+}

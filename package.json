@@ -1,0 +1,36 @@
+{
+  "name": "mulligan",
+  "private": true,
+  "version": "0.2.0",
+  "description": "Mulligan Bot — a model-agnostic, human-in-the-loop AI software engineering environment.",
+  "type": "module",
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "Mulligan": "tsx packages/bot/src/terminal/main.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build:brand": "tsx scripts/build-brand.ts",
+    "build:plugin": "tsx scripts/build-plugin.ts",
+    "build": "pnpm build:brand && pnpm build:plugin"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/picomatch": "^3.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8",
+    "@mulligan/mascot": "workspace:*",
+    "esbuild": "^0.25.0",
+    "@mulligan/mcp": "workspace:*",
+    "@mulligan/bot": "workspace:*"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

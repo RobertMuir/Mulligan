@@ -1,0 +1,17 @@
+{
+  "name": "Mulligan",
+  "owner": { "name": "Mulligan" },
+  "metadata": {
+    "description": "Mulligan plugin marketplace",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "Mulligan",
+      "source": "./",
+      "description": "Human-in-the-loop AI engineering: memory, cookbook, Karpathy-principled review, multi-model fan-out with a private rubric.",
+      "version": "0.1.0",
+      "category": "development"
+    }
+  ]
+}
