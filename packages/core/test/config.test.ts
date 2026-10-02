@@ -52,5 +52,19 @@ describe('config validation at the boundary', () => {
     const config = await loadConfig(root);
     expect(config.mode).toBe('safety');
     expect(config.loop.fanout).toEqual({ auto: true, minDifficulty: 60, count: 5, verify: true, judges: 1 });
+    expect(config.loop.delegation).toEqual({ mode: 'auto', maxWorkers: 4, workerModel: 'sonnet' });
+  });
+
+  it('merges and checks loop.delegation', async () => {
+    const asked = await loadConfig(await projectWith('loop:\n  delegation: { mode: ask, workerModel: fast }\n'));
+    expect(asked.loop.delegation).toEqual({ mode: 'ask', maxWorkers: 4, workerModel: 'fast' });
+
+    const error = await loadConfig(await projectWith('loop:\n  delegation: { mode: always, maxWorkers: 0, workerModel: "" }\n')).catch((e: unknown) => e);
+    expect(error).toBeInstanceOf(ConfigError);
+    expect((error as ConfigError).problems).toEqual([
+      'loop.delegation.mode must be "auto", "ask" or "off" (got "always")',
+      'loop.delegation.maxWorkers must be a whole number from 1 to 8',
+      'loop.delegation.workerModel must be a model name',
+    ]);
   });
 });

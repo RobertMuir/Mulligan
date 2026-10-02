@@ -13,7 +13,7 @@ Do these in order. Show the developer each choice and let them make it; never wr
 Mulligan setup-mulligan
 ```
 
-This creates `.mulligan/` (config, cookbook, golden PRs, verification, architecture, audit, memory history, sessions), an empty `.MulliganMem`, and the private rubric `.mulligan/verification/rubric.yaml`. It adds the local-only paths to `.gitignore`: `.MulliganMem`, `.mulligan/verification/`, `.mulligan/memory/`, `.mulligan/sessions/`, `.mulligan/audit/`. The cookbook, golden PRs and config are team standards and stay committed.
+This creates `.mulligan/` (config, cookbook, golden PRs, verification, architecture, audit, memory history, sessions), an empty `.MulliganMem`, and the private rubric `.mulligan/verification/rubric.yaml`. It adds the local-only paths to `.gitignore`: `.MulliganMem`, `.mulligan/verification/`, `.mulligan/memory/`, `.mulligan/sessions/`, `.mulligan/audit/`, `.mulligan/handoffs/`. The cookbook, golden PRs and config are team standards and stay committed.
 
 ## 2. Connect models
 
@@ -60,6 +60,8 @@ Mulligan Review runs them, and fan-out runs them inside every candidate's sandbo
 ## 5. Fan-out and the rubric
 
 `loop.fanout` in the config controls the automatic fan-out: `auto`, `minDifficulty` (default 60), `count` (default 3), `verify`, and `judges`. The rubric in `.mulligan/verification/rubric.yaml` weights Correctness, the four Karpathy principles and project standards. It is private: judges see it, implementing models never do. Walk the developer through the weights if they want to tune them.
+
+`loop.delegation` controls how Mulligan hands code to worker subagents: `mode` — `auto` (default: spawn workers without asking), `ask` (show the split first) or `off`; `maxWorkers` per wave (default 4); and `workerModel` (default `sonnet`; on Cursor use `fast`). Ask the developer which mode this project wants.
 
 ## 6. Next
 

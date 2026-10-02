@@ -65,6 +65,7 @@ describe('workspace', () => {
     expect(gitignore).toContain('node_modules\n');
     expect(gitignore).toContain('.MulliganMem\n');
     expect(gitignore).toContain('.mulligan/verification/\n');
+    expect(gitignore).toContain('.mulligan/handoffs/\n');
     expect(gitignore).not.toMatch(/^\.mulligan\/cookbook/m);
 
     const again = await initWorkspace(root, 'demo');

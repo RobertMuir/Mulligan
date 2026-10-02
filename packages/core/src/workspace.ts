@@ -28,9 +28,9 @@ export const WORKSPACE_SUBDIRS = [
  * `.MulliganMem` is deliberately left out of version control: it is the
  * developer's own engineering memory for this project. Portability comes from
  * export/import instead. The verification rubric is private so that
- * implementations cannot be tuned to it. Memory history, sessions and audit
- * logs are machine-local. Cookbook, golden PRs, architecture and config are
- * team standards and are meant to be committed.
+ * implementations cannot be tuned to it. Memory history, sessions, audit
+ * logs and delegation handoffs are machine-local. Cookbook, golden PRs,
+ * architecture and config are team standards and are meant to be committed.
  */
 export const LOCAL_ONLY_PATHS = [
   MEMORY_FILE,
@@ -38,6 +38,7 @@ export const LOCAL_ONLY_PATHS = [
   `${WORKSPACE_DIR}/memory/`,
   `${WORKSPACE_DIR}/sessions/`,
   `${WORKSPACE_DIR}/audit/`,
+  `${WORKSPACE_DIR}/handoffs/`,
 ] as const;
 
 const GITIGNORE_MARKER = '# Mulligan — local-only engineering memory and private verification';
@@ -105,9 +106,23 @@ export interface LoopConfig {
     /** Independent judge models scoring each candidate against the private rubric. */
     judges: number;
   };
+  /** How the lead hands code-writing work to worker subagents (skills/mulligan-mode/delegation.md). */
+  delegation: {
+    /** auto: spawn workers without asking; ask: show the split and wait; off: the lead writes the code. */
+    mode: DelegationMode;
+    /** Workers per wave. */
+    maxWorkers: number;
+    /** Model passed to each worker unless a unit needs another, e.g. `sonnet` (Claude Code) or `fast` (Cursor). */
+    workerModel: string;
+  };
 }
 
-export const DEFAULT_LOOP: LoopConfig = { fanout: { auto: true, minDifficulty: 60, count: 3, verify: true, judges: 1 } };
+export type DelegationMode = 'auto' | 'ask' | 'off';
+
+export const DEFAULT_LOOP: LoopConfig = {
+  fanout: { auto: true, minDifficulty: 60, count: 3, verify: true, judges: 1 },
+  delegation: { mode: 'auto', maxWorkers: 4, workerModel: 'sonnet' },
+};
 
 export function defaultConfig(projectName: string): MulliganConfig {
   return {
@@ -156,7 +171,10 @@ export async function loadConfig(root: string): Promise<MulliganConfig> {
     verification: { commands: { ...parsed.verification?.commands } },
     permissions: { approved: parsed.permissions?.approved ?? [] },
     review: { ...fallback.review, ...parsed.review },
-    loop: { fanout: { ...DEFAULT_LOOP.fanout, ...parsed.loop?.fanout } },
+    loop: {
+      fanout: { ...DEFAULT_LOOP.fanout, ...parsed.loop?.fanout },
+      delegation: { ...DEFAULT_LOOP.delegation, ...parsed.loop?.delegation },
+    },
   };
   const problems = configProblems(merged);
   if (problems.length) throw new ConfigError(problems);

@@ -17,6 +17,7 @@ A model can only be as precise as its brief. Most bad attempts start with a brie
 | A design decision | [architecture/TEMPLATE.md](architecture/TEMPLATE.md) |
 | Tests for existing code | [test/TEMPLATE.md](test/TEMPLATE.md) |
 | A security fix or review | [security/TEMPLATE.md](security/TEMPLATE.md) |
+| One unit for a `mulligan-agent` worker | **mulligan-mode**'s [references/handoff.md](../mulligan-mode/references/handoff.md), written to a file as [delegation.md](../mulligan-mode/delegation.md) describes |
 
 ## 2. Fill it from evidence, not imagination
 

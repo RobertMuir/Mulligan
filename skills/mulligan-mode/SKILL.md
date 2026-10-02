@@ -41,14 +41,17 @@ Every decision rests on the Mulligan principles. Each is a short leaf skill next
 Every task runs through this loop. A step can be one line, but none is skipped silently — write `skip: <reason>`.
 
 1. **Understand.** If the request is a long paste (a ticket, an issue thread) or lacks a clear goal, scope or definition of done, apply **brief-before-build**: write the brief with **prompt-engineer**, show it to the developer, and build only once they agree. Otherwise restate the task in a sentence or two. Either way, list your assumptions. Ask the developer only what is theirs to decide *and* changes what you build. Settle everything else by looking or running something; where a stated assumption lets you proceed, proceed, and list it under the decisions in step 8.
-2. **Consult what the team already knows.** In one command: read `.MulliganMem` (or `memory_list`), print the cookbook as a digest — `grep -hE '^ *- id:|^ *(rule|severity|ai_must_ask):' .mulligan/cookbook/*.yaml` — and read `.mulligan/golden-pr/principles.yaml` if it exists. Open a full cookbook file only when a rule's details matter to this change. Memory is learned preference, not law; say when the task looks like an exception.
+2. **Consult what the team already knows.** In one command: read `.MulliganMem` (or `memory_list`), print the cookbook as a digest — `grep -hE '^ *- id:|^ *(rule|severity|ai_must_ask):' .mulligan/cookbook/*.yaml` — read `.mulligan/golden-pr/principles.yaml` if it exists, and print the delegation settings (`grep -A3 '^  delegation:' .mulligan/config.yaml`; defaults in [delegation.md](delegation.md)). Open a full cookbook file only when a rule's details matter to this change. Memory is learned preference, not law; say when the task looks like an exception.
 3. **Define done.** Write the checks: the behaviour that must change, the behaviour that must keep working, and the command or test that proves each.
 4. **Plan.** Open the matching playbook (*Playbooks*, below — one short file) and follow its steps inside this loop; they hold the checklist for that kind of work. Name the data shape and the files you will change, with the reason for each. A file outside the area the task names needs a reason you repeat in step 8. A new or contested design goes to **architect** first.
-5. **Build.** State how the code gets written in one line — `Delegation: <self | single | race | split> — difficulty <n>/100, <reason>` — then:
+5. **Build.** State how the code gets written in one line — `Delegation: <self | units | single | race | split> — difficulty <n>/100, <reason>` — then:
+   - **units** (any tier): the work splits into two or more units that are each worth a worker — a hook, a util, a page, a migration, an Edge Function. Follow [delegation.md](delegation.md): write the contracts, hand each unit to a `mulligan-agent` worker in parallel, then integrate.
    - **self** (the default up to tier 3, *Models*): write the smallest sufficient change yourself.
-   - **single** (tier 4–5, or a change too large to hold in your context): one `mulligan-agent` writes it in its own worktree (**attacking-the-pin**, *Isolation*) from a brief that names the files, the data shape and the checks. Read its diff end to end, apply it, remove the worktree, then verify. Never pass its summary off as your own review.
+   - **single** (tier 4–5, or a change too large to hold in your context, with fewer than two units): one `mulligan-agent` on the strongest model (pass it explicitly; the agent defaults to a cheaper one) writes it in its own worktree (**attacking-the-pin**, *Isolation*) from a brief that names the files, the data shape and the checks. Read its diff end to end, apply it, remove the worktree, then verify. Never pass its summary off as your own review.
    - **race**: only when the change admits several valid shapes — no precedent in the codebase, a contested design, an approach the developer rejected, or the developer asks. Run **attacking-the-pin**.
-   - **split**: independent results, such as an audit or investigations across unrelated subsystems. Code-coupled work stays with one owner.
+   - **split**: independent results, such as an audit or investigations across unrelated subsystems. Code that splits goes to **units**; otherwise it stays with one owner.
+
+   Invoking Mulligan mode is the developer's standing request to delegate: with `loop.delegation.mode: auto` (the default), start **units** and **single** workers without asking again, for work inside the task's scope only. With `ask`, show the split and wait; with `off`, write the code yourself. A delegated worker never delegates.
 
    Before a race or split, write four lines: what must happen first, what is independent, what is shared, and why this is the smallest safe split.
 6. **Verify on the real thing.** Prove every check from step 3. Run focused tests while you work and the full verification commands (`.mulligan/config.yaml`) once, at the end. For behaviour you fixed, show it failing against the original code (a test or a probe) as well as passing after.
@@ -88,6 +91,7 @@ Large, cross-cutting or unfamiliar work goes to the **divot-analysis** skill.
 | "Why is it like this?", history, rationale | **reading-the-flight** |
 | The developer wants to understand, not just receive | **swing-analysis** |
 | Code that crosses a module boundary with more than one reasonable shape | **architect** |
+| Work that splits into units each worth a worker (a hook, a util, a page…) | **mulligan-agent** workers ([delegation.md](delegation.md)) |
 | A change with several valid shapes; several models from different angles | **attacking-the-pin** |
 | A diff to stress-test with several reviewers | **interrogate** |
 | "What could this break?" | **digging-it-out-of-the-dirt** |
