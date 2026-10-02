@@ -139,7 +139,7 @@ The main mode works from a set of principles, each a short leaf skill (`skills/p
 
 The human-in-the-loop group is what sets Mulligan apart: facts are settled by the agent, decisions come to you early with a recommendation, every hand-back is labelled with its evidence, and nothing is learned without your consent.
 
-## Fan-out (a race)
+## Attacking the Pin
 
 1. Each candidate gets the same task from a different angle: smallest change, failure first, codebase-native, test first, rebuild around the requirement, data shape first.
 2. Each candidate works in its own git worktree. Your working tree is never touched while they run.
