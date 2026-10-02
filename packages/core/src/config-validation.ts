@@ -88,5 +88,12 @@ export function configProblems(config: unknown): string[] {
     if (!(Number.isInteger(fanout.count) && inRange(fanout.count, 1, 8))) problems.push('loop.fanout.count must be a whole number from 1 to 8');
     if (!(Number.isInteger(fanout.judges) && inRange(fanout.judges, 0, 5))) problems.push('loop.fanout.judges must be a whole number from 0 to 5');
   }
+  const delegation = isObject(config.loop) ? config.loop.delegation : undefined;
+  if (!isObject(delegation)) problems.push('loop.delegation must be a mapping');
+  else {
+    if (delegation.mode !== 'auto' && delegation.mode !== 'ask' && delegation.mode !== 'off') problems.push(`loop.delegation.mode must be "auto", "ask" or "off" (got ${JSON.stringify(delegation.mode)})`);
+    if (!(Number.isInteger(delegation.maxWorkers) && inRange(delegation.maxWorkers, 1, 8))) problems.push('loop.delegation.maxWorkers must be a whole number from 1 to 8');
+    if (typeof delegation.workerModel !== 'string' || delegation.workerModel.trim() === '') problems.push('loop.delegation.workerModel must be a model name');
+  }
   return problems;
 }

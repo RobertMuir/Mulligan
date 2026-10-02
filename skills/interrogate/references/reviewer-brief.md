@@ -16,6 +16,8 @@ Assess how well the change delivers this intent. Take the intent itself as given
 
 {DIFF_OR_FILES}
 
+Read only these files (and `shared.md`, if named). Read anything else only when you need it to judge correctness — usually a changed file's direct imports or direct callers. Do not explore further; if you need more, say what and why.
+
 ## Evidence already gathered
 
 {MULLIGAN_REVIEW_OUTPUT}

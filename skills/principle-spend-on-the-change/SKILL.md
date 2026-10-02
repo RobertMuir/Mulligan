@@ -15,7 +15,7 @@ Every new token that enters the conversation is paid for, and everything you wri
 - Keep each command's output small enough to read once.
 - Change files with targeted edits; write whole files only when they are new.
 - Run focused checks while working and the full verification once at the end.
-- Use several agents only when the change has more than one good shape.
+- Use several agents only when the change has more than one good shape, or splits into units each worth its own worker (**mulligan-mode** step 5). Write shared context to a file once; never repeat it in each prompt.
 
 **In the Mulligan loop.** Economy never cuts a step the developer relies on: the checks, the review and the hand-back always happen.
 

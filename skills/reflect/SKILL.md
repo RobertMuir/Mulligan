@@ -17,7 +17,7 @@ Use the current conversation, the session log (`.mulligan/sessions/<id>/`), atte
 
 ## 2. Look through three lenses
 
-Use separate subagents or models for these when you can — each sees different things:
+Each lens sees different things. For a long session, you can give each one to a separate subagent or model: write the session's key events once to `.mulligan/handoffs/reflect/session.md`, point each subagent at that file, and cap each report at 250 words. Otherwise, run the lenses yourself:
 
 - **Judgement** — decisions that were wrong or slow to get right; principles that were missed or misapplied.
 - **Tooling** — commands, scripts, checks or skills that were missing, broken or awkward; what could be automated.

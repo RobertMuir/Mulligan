@@ -19,7 +19,7 @@ One paragraph: what this change is for, drawn from the developer's words, commit
 
 ## 3. Brief the reviewers
 
-Send the same brief — [references/reviewer-brief.md](references/reviewer-brief.md), the intent, the change and the Mulligan Review evidence — to one reviewer per available model. Use the host's subagents (in Claude Code, `mulligan-reviewer` with a different `model` each), plus any models the Mulligan MCP server has configured; prefer different models and providers. Run them in parallel. Reviewers are read-only.
+Fill the brief — [references/reviewer-brief.md](references/reviewer-brief.md), the intent, the changed-file list or diff and the Mulligan Review evidence — and write it once to `.mulligan/handoffs/<task-slug>/review-brief.md`. Each reviewer's prompt points to that file rather than repeating it. Send it to one reviewer per available model. Use the host's subagents (in Claude Code, `mulligan-reviewer` with a different `model` each), plus any models the Mulligan MCP server has configured; prefer different models and providers. Run them in parallel. Reviewers are read-only.
 
 ## 4. Merge the findings
 
