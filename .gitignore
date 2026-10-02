@@ -10,3 +10,6 @@ coverage/
 .mulligan/memory/
 .mulligan/sessions/
 .mulligan/audit/
+
+# Local Docs
+docs

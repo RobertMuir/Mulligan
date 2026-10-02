@@ -75,7 +75,7 @@ export async function proposeAndConfirm(session: Session, store: MemoryStore, le
 }
 
 export const memoryReviewCommand: Command = {
-  name: 'mulliganmem-review',
+  name: 'mulligan-memory-review',
   aliases: ['mem-review'],
   summary: 'Compare what Mulligan has learned with the codebase; get an evidence-backed upskilling plan',
   async run(session) {

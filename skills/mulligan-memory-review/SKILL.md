@@ -1,5 +1,5 @@
 ---
-name: mulliganMem-review
+name: mulligan-memory-review
 description: Compare what Mulligan has learned (.MulliganMem) against what the codebase, git history, PR history, cookbook and verification results actually show; identify the developer's strengths and knowledge gaps with evidence; produce a personalised multi-step upskilling plan. Educational, not a grading system.
 ---
 

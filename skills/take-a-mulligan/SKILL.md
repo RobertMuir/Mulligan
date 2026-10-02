@@ -13,7 +13,7 @@ Ask why the approach is wrong, unless they already said. The reason is the most 
 
 ## 2. Learn — as a candidate
 
-Turn the reason into a proposed lesson (CLI: automatic; agent: `memory_propose` with `source: human_rejected`). Keep the developer's own words when they gave them. A single rejection is evidence, not a law, so the lesson is a **candidate** until the developer confirms it. Never confirm it for them.
+Turn the reason into a proposed lesson (CLI: automatic; agent: `memory_propose` with `source: human_rejected`; without the tool, write it under **Memory candidate** in your reply and leave `.MulliganMem` alone). Keep the developer's own words when they gave them. A single rejection is evidence, not a law, so the lesson is a **candidate** until the developer confirms it. Never confirm it for them.
 
 ## 3. List what has been rejected
 
@@ -27,8 +27,8 @@ Every approach rejected on this task so far, each with its reason. The next atte
 
 ## 5. Try again — differently
 
-- **Escalate.** Each Mulligan raises the task's difficulty in Mulligan's routing, so stronger models are used as attempts fail.
-- **Fan out when it is hard.** If the task (with its Mulligan counted) crosses the fan-out threshold, send it to several models from different angles with the rejected approaches listed as off limits (**attacking-the-pin**). Otherwise, produce one new approach yourself.
+- **Escalate.** Each Mulligan adds 10 to the task's difficulty (**mulligan-mode**, *Models*), so stronger models are used as attempts fail.
+- **Race it.** A rejected approach means the shape is contested, so send the task to several models from different angles with the rejected approaches listed as off limits (**attacking-the-pin**). Under `loop.fanout.auto: false`, give one delegate a brief built around what was rejected instead.
 - **Say how it differs.** Open the new attempt with one paragraph: how it differs from what was rejected, and why that addresses the developer's reason.
 
 ## 6. Verify and hand back

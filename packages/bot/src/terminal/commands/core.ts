@@ -14,7 +14,7 @@ import {
   saveConfig,
   workspacePaths,
 } from '@mulligan/core';
-import { loadCookbook } from '@mulligan/cookbook';
+import { baselineCookbook, loadCookbook, saveCookbookFile } from '@mulligan/cookbook';
 import { loadMemory, saveMemory } from '@mulligan/memory';
 import { dim, green } from '@mulligan/mascot';
 import { ensureRubric, rubricPath } from '@mulligan/orchestrator';
@@ -39,6 +39,11 @@ export const initCommand: Command = {
     if (!existsSync(rubric)) {
       await ensureRubric(session.root);
       result.created.push('.mulligan/verification/rubric.yaml (private)');
+    }
+    if ((await loadCookbook(session.root)).files.length === 0) {
+      const files = baselineCookbook();
+      for (const file of files) await saveCookbookFile(session.root, file);
+      result.created.push(`.mulligan/cookbook/ (baseline: ${files.reduce((n, f) => n + f.rules.length, 0)} rules — edit freely)`);
     }
     session.io.print(result.created.length ? `Created: ${result.created.join(', ')}` : 'Workspace already set up.');
     if (result.gitignoreUpdated) {

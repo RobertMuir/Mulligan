@@ -33,6 +33,7 @@ Review the current change the way a careful senior engineer on *this* team would
 1. **Run the engine first.** Terminal: `Mulligan review --task "<what this change is for>"`. Agent: the `mulligan_review` tool.
    Useful options: `--description-file PR.md` (enables the Think Before Coding and success-criteria checks and the golden PR checks), `--scope "src/feature/**"` (declares the intended scope), `--base <branch>`, `--all`, `--verbose`.
    Verification commands from `.mulligan/config.yaml` run through the permission layer.
+   Without the engine (no MCP server, no CLI): run those verification commands yourself and check the added lines against each cookbook rule's `check:` pattern, then carry on with step 2.
 2. **Read the context the engine used:** `.MulliganMem`, `.mulligan/cookbook/*.yaml`, `.mulligan/golden-pr/principles.yaml`, and the diff (`git diff <base>...HEAD` plus uncommitted work).
 3. **Add judgement** where the engine cannot see: the right-hand column above, cookbook rules without a `check:`, correctness against the stated task, architecture, performance, observability, accessibility beyond pattern checks. Cite the lines for each.
 4. **Check blast radius:** unrelated files, dependency changes, config, CI and migration changes, public API changes without docs. Use **digging-it-out-of-the-dirt** for anything that looks risky.

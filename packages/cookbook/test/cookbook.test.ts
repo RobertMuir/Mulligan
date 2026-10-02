@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   STARTER_RULES,
   answersToCookbook,
+  baselineCookbook,
   evaluateCookbook,
   formatViolation,
   globalAnswersToCookbook,
@@ -37,6 +38,18 @@ describe('cookbook parser', () => {
     expect(parseCookbookFile(serializeCookbookFile(file), 'typescript')).toEqual(file);
     expect(() => parseCookbookFile('rules:\n  - {id: X-1, rule: r, check: {type: builtin, name: nope}}', 'x')).toThrow(/must be one of/);
     expect(() => parseCookbookFile('rules:\n  - {id: X-1, rule: r, check: {type: pattern, pattern: "("}}', 'x')).toThrow(/regular expression/);
+  });
+});
+
+describe('baseline cookbook', () => {
+  it('round-trips every category file with unique, prefixed starter ids', () => {
+    const files = baselineCookbook();
+    expect(files.map((f) => f.category)).toEqual(['typescript', 'javascript', 'react', 'security', 'testing', 'architecture', 'ai-guardrails']);
+    for (const file of files) expect(parseCookbookFile(serializeCookbookFile(file), file.category)).toEqual(file);
+    const rules = files.flatMap((f) => f.rules);
+    expect(new Set(rules.map((r) => r.id)).size).toBe(rules.length);
+    expect(rules.every((r) => r.origin === 'starter')).toBe(true);
+    expect(rules.find((r) => r.id === 'AI-002')?.ai_must_ask).toBe(true);
   });
 });
 

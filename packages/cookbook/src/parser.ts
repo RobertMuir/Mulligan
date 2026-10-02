@@ -99,7 +99,7 @@ export function parseCookbookFile(source: string, fallbackCategory: string): Coo
 
 export function serializeCookbookFile(file: CookbookFile): string {
   const header = `# Mulligan Coding Standards Cookbook — ${file.category}\n# "How does OUR team want software written?" Edit freely; Mulligan Review enforces these.\n`;
-  return header + YAML.stringify(file, { lineWidth: 88 });
+  return header + YAML.stringify(file, { lineWidth: 0 }); // one line per rule, so a grep shows each rule whole
 }
 
 export async function loadCookbook(root: string): Promise<Cookbook> {

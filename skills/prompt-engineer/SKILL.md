@@ -27,6 +27,8 @@ A model can only be as precise as its brief. Most bad attempts start with a brie
 - **Out of scope** — what not to change (Surgical Changes).
 - **Assumptions to state** — the open questions the model must answer explicitly rather than guess (Think Before Coding).
 
+When the source is a pasted ticket or a loose request, keep the developer's own words for the goal, mark every part you inferred (`[inferred]`), turn vague acceptance ("should work properly") into runnable checks, and put open questions at the top, each with a proposed answer.
+
 ## 3. Check the brief before sending it
 
 - Could two competent engineers read it and build different things? Then it is ambiguous — tighten it or list the readings.
@@ -34,6 +36,10 @@ A model can only be as precise as its brief. Most bad attempts start with a brie
 - Does it ask for more than the task needs? Remove it (Simplicity First).
 - Does it leak the private rubric? It must not — implementing models never see the scoring.
 
-## 4. Use it
+## 4. Agree it with the developer
 
-Pass the brief to `/implement`, to a fan-out (**attacking-the-pin**), or to a subagent. Keep it with the session so a Mulligan can reuse and sharpen it.
+Show the brief and ask the developer to confirm or edit it before any code is written (**principle-brief-before-build**). Their edits are the most useful signal you will get about what they meant. If they are unavailable, proceed on the brief and list its `[inferred]` parts under the decisions waiting on them.
+
+## 5. Use it
+
+Pass the agreed brief to the build step of **mulligan-mode**, to a race (**attacking-the-pin**), or to a subagent. Keep it with the session so a Mulligan can reuse and sharpen it.

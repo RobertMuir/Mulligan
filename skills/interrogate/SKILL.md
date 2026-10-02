@@ -11,7 +11,7 @@ Independent reviewers on different models catch different real problems. Agreeme
 
 - Files or a diff the developer named; otherwise the branch against its base (`git diff <base>...HEAD`) plus uncommitted work.
 - The surrounding code reviewers need: callers, types, tests.
-- Run `mulligan_review` first. Its evidence (cookbook violations, Karpathy checks, verification results) goes to every reviewer.
+- Run the `mulligan_review` tool first, or without it step 1 of **mulligan-review**. Its evidence (cookbook violations, Karpathy checks, verification results) goes to every reviewer.
 
 ## 2. State the intent
 
@@ -19,7 +19,7 @@ One paragraph: what this change is for, drawn from the developer's words, commit
 
 ## 3. Brief the reviewers
 
-Send the same brief — [references/reviewer-brief.md](references/reviewer-brief.md), the intent, the change and the Mulligan Review evidence — to one reviewer per available model. Use the models Mulligan has configured (`route_task` shows them); prefer different providers. Run them in parallel. Reviewers are read-only.
+Send the same brief — [references/reviewer-brief.md](references/reviewer-brief.md), the intent, the change and the Mulligan Review evidence — to one reviewer per available model. Use the host's subagents (in Claude Code, `mulligan-reviewer` with a different `model` each), plus any models the Mulligan MCP server has configured; prefer different models and providers. Run them in parallel. Reviewers are read-only.
 
 ## 4. Merge the findings
 

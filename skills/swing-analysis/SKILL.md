@@ -27,4 +27,4 @@ Write plainly: short sentences, one name per concept, the concrete mechanism rat
 
 ## Close the loop
 
-When the conversation shows a gap the developer wants to close, offer to turn it into a step in their upskilling plan (**mulliganmem-review**). If they arrive at a preference worth keeping, offer it as a Mulligan Memory candidate — they decide whether it is recorded.
+When the conversation shows a gap the developer wants to close, offer to turn it into a step in their upskilling plan (**mulligan-memory-review**). If they arrive at a preference worth keeping, offer it as a Mulligan Memory candidate — they decide whether it is recorded.
