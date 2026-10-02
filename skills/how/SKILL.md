@@ -12,7 +12,7 @@ Build the developer a working mental model of a part of the system: enough to ch
 State your reading of the question in one sentence so the developer can redirect you.
 
 - **Narrow** — one function, one module, one behaviour. Explore and explain in one pass.
-- **Wide** — a subsystem across several files or services, or a cross-cutting feature. Split it into two to four angles (for example: entry points and triggers; the data and its changes; boundaries with other systems; failure and edge paths) and explore each separately — in parallel subagents when you have them — then combine.
+- **Wide** — a subsystem across several files or services, or a cross-cutting feature. Split it into two to four angles (for example: entry points and triggers; the data and its changes; boundaries with other systems; failure and edge paths) and explore each separately, then combine. Give an angle to a read-only subagent only when it covers more code than you want in your own context; name the files to start from and cap its report at 250 words, so it does not re-read what you already know.
 
 When unsure, treat it as narrow.
 
