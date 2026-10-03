@@ -51,7 +51,7 @@ The task's tier does not raise a unit's model; score each unit on its own.
 
 Output tokens cost more than input tokens. Never repeat shared context inside every prompt. Instead:
 
-- First make sure `.gitignore` lists `.mulligan/handoffs/` (projects set up before 0.2.0 lack it); add the line if not.
+- First make sure `.gitignore` lists `.mulligan/handoffs/` (projects set up before 0.3.0 lack it); add the line if not.
 - Write `.mulligan/handoffs/<task-slug>/shared.md` **once**: the decisions made so far, the contracts, the house patterns, and pitfalls found earlier in the session.
 - Write one `<unit>.md` per worker from [references/handoff.md](references/handoff.md), containing only what that unit needs.
 - The prompt to each worker is then three lines: *"Read `.mulligan/handoffs/<task>/shared.md` and `<unit>.md`, then build the unit. Report in the format at the end of your handoff."*

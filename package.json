@@ -1,7 +1,7 @@
 {
   "name": "mulligan",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Robert Muir",
   "license": "MIT",
   "description": "Mulligan Bot — a model-agnostic, human-in-the-loop AI software engineering environment.",
