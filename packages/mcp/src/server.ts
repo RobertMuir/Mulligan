@@ -45,7 +45,7 @@ export function resolveRoot(explicit?: string): string {
 }
 
 export function createMulliganerver(defaultRoot?: string): McpServer {
-  const server = new McpServer({ name: 'Mulligan', version: '0.2.0' }, { instructions: SERVER_INSTRUCTIONS });
+  const server = new McpServer({ name: 'Mulligan', version: '0.3.0' }, { instructions: SERVER_INSTRUCTIONS });
   const rootOf = (r?: string) => resolveRoot(r ?? defaultRoot);
   const rootArg = z.string().optional().describe('Project root. Defaults to the current project.');
 

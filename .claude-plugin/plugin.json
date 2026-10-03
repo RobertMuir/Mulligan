@@ -1,6 +1,6 @@
 {
   "name": "Mulligan",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "description": "Mulligan: a human-in-the-loop AI engineering team. Learns your engineering preferences (Mulligan Memory), enforces your coding cookbook, reviews against the Karpathy principles, fans hard tasks out to several models and ranks them against a private rubric. You stay the senior engineer.",
   "author": { "name": "Mulligan" },

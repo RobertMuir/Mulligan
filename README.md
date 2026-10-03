@@ -34,6 +34,14 @@ Also in 0.2:
 - **Sharp briefs from loose prompts:** a pasted ticket or a vague request is rewritten into a brief with a goal, scope and runnable success checks, and you approve it before any code is written.
 - **Mulligan principles:** 25 short, enforceable guidelines the main mode applies and cites, written for a human-in-the-loop flow.
 
+Version 0.3:
+- **Bunker Buster:** the last resort for a problem that has beaten everything else. It lists every failed attempt, finds the one assumption they all shared, and takes a single shot built on the opposite, on the strongest model, in an isolated worktree. Mulligan takes the shot itself when two attempts fail on the same assumption and nobody can say why, or when a tier-5 problem fails a full attempt. You can also call it at any time. It never commits, pushes or deploys, and nothing it builds is kept without your say-so.
+- **Automatic delegation:** when a task splits into two or more real units (a hook, a util, a page, a migration), Mulligan writes the contracts first and hands each unit to its own worker subagent, running in parallel. The workers don't need to be asked for.
+- **Cheaper subagents:** shared context is written once to `.mulligan/handoffs/<task>/` instead of being repeated in every prompt. Workers read only their handoff, and the reviewer reads only the files it is given. In a dry run, a worker used about 40k tokens against 99–137k before, and a review used 68k against 132–245k.
+- **`loop.delegation` in `.mulligan/config.yaml`:** `mode` (`auto`, `ask` or `off`), `maxWorkers` and `workerModel`. Workers default to Sonnet (use `fast` on Cursor).
+- **Fixes:** every skill's frontmatter now parses as YAML, and `.mulligan/handoffs/` is added to `.gitignore` on setup.
+- The plugin now has 24 workflow skills.
+
 ## Install as a plugin
 
 This repository is its own plugin marketplace: **[github.com/RobertMuir/Mulligan](https://github.com/RobertMuir/Mulligan)** (manifest: [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json)).
@@ -92,10 +100,13 @@ Keys always come from environment variables; nothing is written to files.
 
 Every task in **mulligan-mode** runs the same loop: understand, consult memory and the cookbook, define done as checks, plan, build, verify, review, explain, and then you decide. Mulligan states up front how the code will be written:
 
+- **units** — work that splits into two or more real units: the agent writes the contracts, a worker subagent builds each unit in parallel, and the agent integrates and verifies once. This happens automatically; set `loop.delegation.mode` to `ask` or `off` to change that.
 - **self** — the default for ordinary work: the agent writes the smallest sufficient change itself.
 - **single** — a hard or large change: one subagent writes it in an isolated worktree, and the orchestrating agent reads the whole diff before applying it.
 - **race** — a change with several valid shapes (no precedent in the codebase, a contested design, or an approach you rejected): several candidates compete.
 - **split** — independent work such as an audit: parallel workers, one report.
+
+When every attempt has failed, **bunker-buster** takes one last shot (see *Skills*).
 
 Mulligan keeps an eye on cost: it reads in batches, runs the full verification once at the end, and keeps the hand-back short enough to act on.
 
@@ -344,6 +355,20 @@ Difficulty +10 → routed to a stronger model. Fanning out with the rejected app
 ```
 
 **What it adds.** The rejection reason becomes a candidate memory lesson, the model escalates, the retry races several genuinely different approaches, and none of them may be a variation of what you rejected. The skill must always be able to answer one question: *what did we learn from the last attempt?*
+
+### bunker-buster — the last resort
+
+**Use it when** everything has failed, including Mulligan mode, repeated Mulligans and your own ideas, and you have nothing left to lose. Call it yourself at any time. Mulligan mode also takes it automatically, once per task: when two attempts fail on the same assumption and nobody can say why, or when a tier-5 problem has failed a full attempt.
+
+```text
+/bunker-buster checkout total is off by a cent under load
+
+Shared assumption: the rounding bug is in our code. Thrown out → the shot: read the payment SDK's rounding.
+Shot taken once in .mulligan/sessions/bunker/checkout-cent · goal check: PASS → Landed.
+Patch saved. Build on it? It goes back through mulligan-mode only if you say so.
+```
+
+**What it adds.** One all-out shot, built on the opposite of the assumption every failed attempt shared. It runs on the strongest model in an isolated worktree, makes no fix rounds, and stops after one try. It usually misses. A miss can still disprove the assumption that kept you stuck. It never commits, pushes or deploys, and its patch goes no further unless you say so.
 
 ### tdd
 
