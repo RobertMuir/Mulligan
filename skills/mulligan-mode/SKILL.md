@@ -54,7 +54,7 @@ Every task runs through this loop. A step can be one line, but none is skipped s
    Invoking Mulligan mode is the developer's standing request to delegate: with `loop.delegation.mode: auto` (the default), start **units** and **single** workers without asking again, for work inside the task's scope only. With `ask`, show the split and wait; with `off`, write the code yourself. A delegated worker never delegates.
 
    Before a race or split, write four lines: what must happen first, what is independent, what is shared, and why this is the smallest safe split.
-6. **Verify on the real thing.** Prove every check from step 3. Run focused tests while you work and the full verification commands (`.mulligan/config.yaml`) once, at the end. For behaviour you fixed, show it failing against the original code (a test or a probe) as well as passing after.
+6. **Verify on the real thing.** Prove every check from step 3. Run focused tests while you work and the full verification commands (`.mulligan/config.yaml`) once, at the end. For behaviour you fixed, show it failing against the original code (a test or a probe) as well as passing after. If the goal check still fails and a **bunker-buster** trigger is met (*bleak*: two attempts failed on the same assumption, and the developer has no answer; *hard*: tier 5 and an attempt failed), take that one shot automatically.
 7. **Review.** Run the `mulligan_review` tool once over the final diff — it runs the verification commands, so do not repeat them — or, without it, the **mulligan-review** skill. Fix what it finds and re-run only what the fix touched.
 8. **Explain** (*Writing the reply*).
 9. **The developer decides:** accept, modify, or take a Mulligan (**take-a-mulligan**). On accept, propose what was learned as a Mulligan Memory candidate; never confirm it yourself.
@@ -97,6 +97,7 @@ Large, cross-cutting or unfamiliar work goes to the **divot-analysis** skill.
 | "What could this break?" | **digging-it-out-of-the-dirt** |
 | A bug with a cheap test path | **tdd** |
 | The developer rejected the approach | **take-a-mulligan** |
+| Everything has failed: a hail mary, called by the developer or triggered automatically (step 6) | **bunker-buster** |
 | A long session is ending; capture lessons | **reflect** |
 | No scripted way to prove the app works | **create-verification-skill** |
 | Turning a vague request into a precise brief for a model | **prompt-engineer** |

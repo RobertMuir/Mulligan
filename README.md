@@ -24,8 +24,8 @@ Version 0.1:
 - MulliganMem Review
 Finally Mulligan Bot, your agentic friendly coding terminal with model routing and a permission layer.
 
-Also in 0.1:
-- **A plugin** for Claude Code and Cursor: 23 workflow skills, 25 Mulligan principles, 2 agents and an MCP server.
+Also in 0.2:
+- **A plugin** for Claude Code and Cursor: 24 workflow skills, 25 Mulligan principles, 2 agents and an MCP server.
 - **The Karpathy principles** in every review: Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution.
 - **Every model:** Claude, GPT, Gemini, OpenRouter, Mistral, Groq, Together, DeepSeek, xAI, Fireworks, and local Llama models through Ollama, llama.cpp, LM Studio or vLLM.
 - **Automatic model selection**, weighted by how difficult each task is.
@@ -344,6 +344,20 @@ Difficulty +10 → routed to a stronger model. Fanning out with the rejected app
 ```
 
 **What it adds.** The rejection reason becomes a candidate memory lesson, the model escalates, the retry races several genuinely different approaches, and none of them may be a variation of what you rejected. The skill must always be able to answer one question: *what did we learn from the last attempt?*
+
+### bunker-buster — the last resort
+
+**Use it when** everything has failed, including Mulligan mode, repeated Mulligans and your own ideas, and you have nothing left to lose. Call it yourself at any time. Mulligan mode also takes it automatically, once per task: when two attempts fail on the same assumption and nobody can say why, or when a tier-5 problem has failed a full attempt.
+
+```text
+/bunker-buster checkout total is off by a cent under load
+
+Shared assumption: the rounding bug is in our code. Thrown out → the shot: read the payment SDK's rounding.
+Shot taken once in .mulligan/sessions/bunker/checkout-cent · goal check: PASS → Landed.
+Patch saved. Build on it? It goes back through mulligan-mode only if you say so.
+```
+
+**What it adds.** One all-out shot, built on the opposite of the assumption every failed attempt shared. It runs on the strongest model in an isolated worktree, makes no fix rounds, and stops after one try. It usually misses. A miss can still disprove the assumption that kept you stuck. It never commits, pushes or deploys, and its patch goes no further unless you say so.
 
 ### tdd
 

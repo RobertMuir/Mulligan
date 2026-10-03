@@ -33,6 +33,6 @@ Every approach rejected on this task so far, each with its reason. The next atte
 
 ## 6. Verify and hand back
 
-Verify the new attempt like any other (**mulligan-review**), then let the developer decide again. If two Mulligan in a row fail on the same underlying assumption, stop and question the assumption itself with the developer before a third attempt.
+Verify the new attempt like any other (**mulligan-review**), then let the developer decide again. If two Mulligan in a row fail on the same underlying assumption, stop and question the assumption itself with the developer before a third attempt. If neither of you can answer it, that is the *bleak* trigger: take one **bunker-buster** shot.
 
 The question this skill must always be able to answer: *what did we learn from the last attempt, and how did it change this one?*

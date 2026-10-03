@@ -1,6 +1,6 @@
 ---
 name: reflect
-description: At the end of a substantial session, mine what happened for durable lessons — corrections, surprises, wasted effort, things that worked — and route each to where it will actually hold: Mulligan Memory, a cookbook check, a skill edit, or a structural guard. Nothing is applied without the developer. Use for /reflect or "what did we learn?".
+description: "At the end of a substantial session, mine what happened for durable lessons — corrections, surprises, wasted effort, things that worked — and route each to where it will actually hold: Mulligan Memory, a cookbook check, a skill edit, or a structural guard. Nothing is applied without the developer. Use for /reflect or \"what did we learn?\"."
 ---
 
 # Reflect
