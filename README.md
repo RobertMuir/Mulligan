@@ -16,7 +16,7 @@ This repository implements your new coding tool empowering engineers to develop 
 Mulligan is built by **Robert Muir**, a Senior Full Stack Engineer (React, React Native, TypeScript, C#/.NET, Azure, Python and applied AI). I'm looking for my next role — if your team cares about shipping AI-assisted code that people can trust, I'd like to hear from you: [github.com/RobertMuir](https://github.com/RobertMuir).
 
 ## Release Log
-Version 0.1:
+Version 0.2:
 - Mulligan Memory
 - the Coding Standards Cookbook 
 - PR governance based off your Golden PRs
